@@ -38,5 +38,8 @@ jobs:
       - name: Run 04-colocation-and-joins verification
         run: make verify-04
 
+      - name: Run 05-tenant-isolation verification
+        run: make verify-05
+
       - name: Clean teardown
         run: make down

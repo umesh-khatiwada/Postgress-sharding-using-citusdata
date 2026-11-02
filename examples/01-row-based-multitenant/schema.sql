@@ -122,10 +122,9 @@ SELECT create_distributed_table('events', 'tenant_id', colocate_with => 'tenants
 -- 9. Row-Level Security (RLS) Policies
 -- ==============================================================================
 
--- Grant permissions to application role
+-- Grant permissions to application role specifically on example tables
 GRANT USAGE ON SCHEMA public TO tenant_app_user;
-GRANT ALL ON ALL TABLES IN SCHEMA public TO tenant_app_user;
-GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO tenant_app_user;
+GRANT ALL ON tenants, users, projects, tasks, events TO tenant_app_user;
 
 -- Enable Row-Level Security on all multi-tenant tables
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;

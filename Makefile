@@ -93,8 +93,13 @@ verify-04: ## Verify 04-colocation-and-joins
 	@chmod +x examples/04-colocation-and-joins/verify.sh
 	@./examples/04-colocation-and-joins/verify.sh
 
+.PHONY: verify-05
+verify-05: ## Verify 05-tenant-isolation
+	@chmod +x examples/05-tenant-isolation/verify.sh
+	@./examples/05-tenant-isolation/verify.sh
+
 .PHONY: verify-all
-verify-all: verify-00 verify-01 verify-02 verify-03 verify-04 ## Run verification across all implemented examples
+verify-all: verify-00 verify-01 verify-02 verify-03 verify-04 verify-05 ## Run verification across all implemented examples
 	@echo "======================================================================"
 	@echo " All implemented example verifications passed successfully!"
 	@echo "======================================================================"
