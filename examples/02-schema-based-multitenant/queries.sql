@@ -65,8 +65,21 @@ SELECT table_name::text, nodename, nodeport
 FROM citus_shards 
 WHERE table_name::text LIKE 'tenant_acme.%';
 
--- Move tenant_acme to citus_worker_2
-SELECT citus_schema_move('tenant_acme', 'citus_worker_2', 5432, shard_transfer_mode => 'block_writes');
+-- Dynamically move tenant_acme to the other worker node
+DO $$
+DECLARE
+    v_current_node text;
+    v_target_node text;
+BEGIN
+    SELECT nodename INTO v_current_node 
+    FROM citus_shards 
+    WHERE table_name::text = 'tenant_acme.users' LIMIT 1;
+
+    v_target_node := CASE WHEN v_current_node = 'citus_worker_1' THEN 'citus_worker_2' ELSE 'citus_worker_1' END;
+    RAISE NOTICE 'Moving tenant_acme from % to %...', v_current_node, v_target_node;
+
+    PERFORM citus_schema_move('tenant_acme', v_target_node, 5432, shard_transfer_mode => 'block_writes');
+END $$;
 
 -- Verify node after move
 SELECT table_name::text, nodename, nodeport 

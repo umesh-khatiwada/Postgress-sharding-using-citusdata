@@ -32,5 +32,8 @@ jobs:
       - name: Run 02-schema-based-multitenant verification
         run: make verify-02
 
+      - name: Run 03-reference-and-local-tables verification
+        run: make verify-03
+
       - name: Clean teardown
         run: make down
