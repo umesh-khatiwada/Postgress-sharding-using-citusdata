@@ -25,6 +25,13 @@ help: ## Display this help message
 	@echo "======================================================================"
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-22s\033[0m %s\n", $$1, $$2}'
 
+.PHONY: pull
+pull: ## Pre-fetch and download all pinned Docker images
+	docker compose pull
+
+.PHONY: download
+download: pull ## Alias for pull (download all pinned Docker images)
+
 .PHONY: up
 up: ## Start the Citus cluster (coordinator + 3 workers + pgbouncer)
 	@echo "--> Starting Citus cluster containers..."
@@ -33,10 +40,11 @@ up: ## Start the Citus cluster (coordinator + 3 workers + pgbouncer)
 	@./common/wait-for-cluster.sh
 
 .PHONY: down
-down: ## Stop and remove all containers, networks, and volumes
-	@echo "--> Tearing down Citus cluster..."
-	docker compose down -v --remove-orphans
-	@echo "--> Cluster destroyed cleanly."
+down: ## Stop and destroy all containers, networks, and volumes
+	@./common/destroy-cluster.sh
+
+.PHONY: destroy
+destroy: down ## Alias for down (destroy all Citus cluster services and volumes)
 
 .PHONY: ps
 ps: ## View cluster container status

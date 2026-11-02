@@ -119,9 +119,25 @@ make shell-worker-1
 make shell-pgbouncer
 ```
 
-### 5. Tear Down Cluster
+### 5. Tear Down and Destroy All Cluster Services
+Tears down all containers, custom networks, persistent volumes, and test caches cleanly:
 ```bash
+# Using Makefile
 make down
+# or alias
+make destroy
+
+# Using standalone shell script
+./destroy.sh
+# To also delete downloaded Docker images:
+./destroy.sh --all
+```
+
+### 6. Pre-Download Docker Images (Optional)
+```bash
+make download
+# or
+make pull
 ```
 
 ---
