@@ -41,5 +41,11 @@ jobs:
       - name: Run 05-tenant-isolation verification
         run: make verify-05
 
+      - name: Run 06-rebalancing-and-scaling verification
+        run: make verify-06
+
+      - name: Run 07-realtime-analytics verification
+        run: make verify-07
+
       - name: Clean teardown
         run: make down

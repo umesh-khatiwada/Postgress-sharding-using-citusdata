@@ -103,8 +103,13 @@ verify-06: ## Verify 06-rebalancing-and-scaling
 	@chmod +x examples/06-rebalancing-and-scaling/verify.sh
 	@./examples/06-rebalancing-and-scaling/verify.sh
 
+.PHONY: verify-07
+verify-07: ## Verify 07-realtime-analytics
+	@chmod +x examples/07-realtime-analytics/verify.sh
+	@./examples/07-realtime-analytics/verify.sh
+
 .PHONY: verify-all
-verify-all: verify-00 verify-01 verify-02 verify-03 verify-04 verify-05 verify-06 ## Run verification across all implemented examples
+verify-all: verify-00 verify-01 verify-02 verify-03 verify-04 verify-05 verify-06 verify-07 ## Run verification across all implemented examples
 	@echo "======================================================================"
 	@echo " All implemented example verifications passed successfully!"
 	@echo "======================================================================"

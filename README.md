@@ -58,8 +58,8 @@ flowchart TD
 | **03** | [Reference & Local Tables](examples/03-reference-and-local-tables/) | `create_reference_table`, `citus_add_local_table_to_metadata`, Coordinator-local joins, Zero-shuffle joins, 2PC writes | **Implemented & Verified** |
 | **04** | [Co-location & Joins](examples/04-colocation-and-joins/) | Colocated vs Repartition Joins, `MapMergeJob`, Subqueries/CTEs, `INSERT..SELECT`, `COPY`, `create_distributed_function` | **Implemented & Verified** |
 | **05** | [Tenant Isolation](examples/05-tenant-isolation/) | `isolate_tenant_to_new_shard`, `citus_stat_tenants`, Hot tenant mitigation, Relocation to dedicated worker 3 | **Implemented & Verified** |
-| **06** | Rebalancing & Scaling | `citus_rebalance_start`, `citus_rebalance_status`, `citus_split_shard_by_split_points`, `citus_drain_node` | Planned |
-| **07** | Real-Time Analytics | Incremental Rollups, Parallel Aggregates, `hll` HyperLogLog, `topn` | Planned |
+| **06** | [Rebalancing & Scaling](examples/06-rebalancing-and-scaling/) | `citus_rebalance_start`, `citus_rebalance_status`, `citus_move_shard_placement`, `citus_split_shard_by_split_points`, `citus_drain_node`, `rebalance_table_shards` | **Implemented & Verified** |
+| **07** | [Real-Time Analytics](examples/07-realtime-analytics/) | Incremental Rollups, Parallel Aggregates, `hll` HyperLogLog, `topn` Sketches, Sub-millisecond Dashboards | **Implemented & Verified** |
 | **08** | Time-Series Partitioning | Distributed Native Partitioning, automated retention, partition pruning | Planned |
 | **09** | Columnar Storage | `USING columnar`, compression (zstd/lz4), Mixed hot row / cold columnar storage | Planned |
 | **10** | Distributed Transactions | 2-Phase Commit (2PC), `citus.multi_shard_commit_protocol`, Distributed deadlocks | Planned |
