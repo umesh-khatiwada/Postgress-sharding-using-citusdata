@@ -108,8 +108,13 @@ verify-07: ## Verify 07-realtime-analytics
 	@chmod +x examples/07-realtime-analytics/verify.sh
 	@./examples/07-realtime-analytics/verify.sh
 
+.PHONY: verify-08
+verify-08: ## Verify 08-timeseries-partitioning
+	@chmod +x examples/08-timeseries-partitioning/verify.sh
+	@./examples/08-timeseries-partitioning/verify.sh
+
 .PHONY: verify-all
-verify-all: verify-00 verify-01 verify-02 verify-03 verify-04 verify-05 verify-06 verify-07 ## Run verification across all implemented examples
+verify-all: verify-00 verify-01 verify-02 verify-03 verify-04 verify-05 verify-06 verify-07 verify-08 ## Run verification across all implemented examples
 	@echo "======================================================================"
 	@echo " All implemented example verifications passed successfully!"
 	@echo "======================================================================"
