@@ -88,8 +88,13 @@ verify-03: ## Verify 03-reference-and-local-tables
 	@chmod +x examples/03-reference-and-local-tables/verify.sh
 	@./examples/03-reference-and-local-tables/verify.sh
 
+.PHONY: verify-04
+verify-04: ## Verify 04-colocation-and-joins
+	@chmod +x examples/04-colocation-and-joins/verify.sh
+	@./examples/04-colocation-and-joins/verify.sh
+
 .PHONY: verify-all
-verify-all: verify-00 verify-01 verify-02 verify-03 ## Run verification across all implemented examples
+verify-all: verify-00 verify-01 verify-02 verify-03 verify-04 ## Run verification across all implemented examples
 	@echo "======================================================================"
 	@echo " All implemented example verifications passed successfully!"
 	@echo "======================================================================"
