@@ -47,5 +47,11 @@ jobs:
       - name: Run 07-realtime-analytics verification
         run: make verify-07
 
+      - name: Run 08-timeseries-partitioning verification
+        run: make verify-08
+
+      - name: Run 09-columnar-storage verification
+        run: make verify-09
+
       - name: Clean teardown
         run: make down

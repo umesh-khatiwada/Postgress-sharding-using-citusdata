@@ -113,8 +113,13 @@ verify-08: ## Verify 08-timeseries-partitioning
 	@chmod +x examples/08-timeseries-partitioning/verify.sh
 	@./examples/08-timeseries-partitioning/verify.sh
 
+.PHONY: verify-09
+verify-09: ## Verify 09-columnar-storage
+	@chmod +x examples/09-columnar-storage/verify.sh
+	@./examples/09-columnar-storage/verify.sh
+
 .PHONY: verify-all
-verify-all: verify-00 verify-01 verify-02 verify-03 verify-04 verify-05 verify-06 verify-07 verify-08 ## Run verification across all implemented examples
+verify-all: verify-00 verify-01 verify-02 verify-03 verify-04 verify-05 verify-06 verify-07 verify-08 verify-09 ## Run verification across all implemented examples
 	@echo "======================================================================"
 	@echo " All implemented example verifications passed successfully!"
 	@echo "======================================================================"

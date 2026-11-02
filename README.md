@@ -60,8 +60,8 @@ flowchart TD
 | **05** | [Tenant Isolation](examples/05-tenant-isolation/) | `isolate_tenant_to_new_shard`, `citus_stat_tenants`, Hot tenant mitigation, Relocation to dedicated worker 3 | **Implemented & Verified** |
 | **06** | [Rebalancing & Scaling](examples/06-rebalancing-and-scaling/) | `citus_rebalance_start`, `citus_rebalance_status`, `citus_move_shard_placement`, `citus_split_shard_by_split_points`, `citus_drain_node`, `rebalance_table_shards` | **Implemented & Verified** |
 | **07** | [Real-Time Analytics](examples/07-realtime-analytics/) | Incremental Rollups, Parallel Aggregates, `hll` HyperLogLog, `topn` Sketches, Sub-millisecond Dashboards | **Implemented & Verified** |
-| **08** | Time-Series Partitioning | Distributed Native Partitioning, automated retention, partition pruning | Planned |
-| **09** | Columnar Storage | `USING columnar`, compression (zstd/lz4), Mixed hot row / cold columnar storage | Planned |
+| **08** | [Time-Series Partitioning](examples/08-timeseries-partitioning/) | Distributed Native Partitioning, `create_time_partitions`, `drop_old_time_partitions`, Automated retention, Partition pruning | **Implemented & Verified** |
+| **09** | [Columnar Storage](examples/09-columnar-storage/) | `USING columnar`, `alter_columnar_table_set` (zstd/lz4), Projection elimination, Mixed hot heap / cold columnar partitions | **Implemented & Verified** |
 | **10** | Distributed Transactions | 2-Phase Commit (2PC), `citus.multi_shard_commit_protocol`, Distributed deadlocks | Planned |
 | **11** | Query from Any Node (MX) | Citus MX, Worker metadata sync, read/write scaling without coordinator bottleneck | Planned |
 | **12** | Connection Pooling | PgBouncer configuration, Citus transaction pool vs session pool mode | Planned |
