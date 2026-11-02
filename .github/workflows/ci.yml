@@ -1,0 +1,33 @@
+name: Citus Cluster CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-examples:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Compose
+        run: |
+          docker compose version
+
+      - name: Copy .env.example to .env
+        run: cp .env.example .env
+
+      - name: Start Citus Cluster
+        run: make up
+
+      - name: Run 00-cluster-setup verification
+        run: make verify-00
+
+      - name: Run 01-row-based-multitenant verification
+        run: make verify-01
+
+      - name: Clean teardown
+        run: make down
