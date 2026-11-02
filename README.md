@@ -54,7 +54,7 @@ flowchart TD
 | :- | :--- | :--- | :--- |
 | **00** | [Cluster Setup](examples/00-cluster-setup/) | `CREATE EXTENSION citus`, `citus_set_coordinator_host`, `citus_add_node`, `pg_dist_node`, `citus_check_cluster_node_health` | **Implemented & Verified** |
 | **01** | [Row-Based Multi-Tenant](examples/01-row-based-multitenant/) | `create_distributed_table(..., colocate_with)`, Composite Primary/Foreign Keys, Router Queries, Co-located Joins, Scatter-Gather Analytics, Distributed RLS, DDL Propagation | **Implemented & Verified** |
-| **02** | Schema-Based Multi-Tenant | `citus.enable_schema_based_sharding`, `citus_schemas`, `citus_schema_move`, `citus_schema_distribute` | Planned |
+| **02** | [Schema-Based Multi-Tenant](examples/02-schema-based-multitenant/) | `citus.enable_schema_based_sharding`, `citus_schemas`, `citus_schema_move`, `citus_schema_undistribute`/`distribute`, Decision Matrix | **Implemented & Verified** |
 | **03** | Reference & Local Tables | `create_reference_table`, `citus_add_local_table_to_metadata`, Coordinator-local joins | Planned |
 | **04** | Co-location & Joins | Colocated vs Repartition Joins, Subqueries/CTEs, `INSERT..SELECT`, `create_distributed_function` | Planned |
 | **05** | Tenant Isolation | `isolate_tenant_to_new_shard`, `citus_stat_tenants`, Hot tenant mitigation | Planned |

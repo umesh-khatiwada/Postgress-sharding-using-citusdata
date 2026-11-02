@@ -78,8 +78,13 @@ verify-01: ## Verify 01-row-based-multitenant
 	@chmod +x examples/01-row-based-multitenant/verify.sh
 	@./examples/01-row-based-multitenant/verify.sh
 
+.PHONY: verify-02
+verify-02: ## Verify 02-schema-based-multitenant
+	@chmod +x examples/02-schema-based-multitenant/verify.sh
+	@./examples/02-schema-based-multitenant/verify.sh
+
 .PHONY: verify-all
-verify-all: verify-00 verify-01 ## Run verification across all implemented examples
+verify-all: verify-00 verify-01 verify-02 ## Run verification across all implemented examples
 	@echo "======================================================================"
 	@echo " All implemented example verifications passed successfully!"
 	@echo "======================================================================"

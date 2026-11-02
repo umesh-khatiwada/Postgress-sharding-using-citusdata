@@ -29,5 +29,8 @@ jobs:
       - name: Run 01-row-based-multitenant verification
         run: make verify-01
 
+      - name: Run 02-schema-based-multitenant verification
+        run: make verify-02
+
       - name: Clean teardown
         run: make down
