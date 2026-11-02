@@ -9,6 +9,7 @@ import sys
 
 try:
     import psycopg
+    from psycopg import sql
     from psycopg.rows import dict_row
 except ImportError:
     print("Error: psycopg 3 is required. Install with: pip install 'psycopg[binary]'")
@@ -24,6 +25,20 @@ DB_PASSWORD = os.getenv("APP_PASSWORD", "tenant_app_password")
 DSN = f"host={DB_HOST} port={DB_PORT} dbname={DB_NAME} user={DB_USER} password={DB_PASSWORD}"
 
 
+def set_tenant_context(cur, tenant_id: int):
+    """
+    Sets the active tenant ID for the current transaction.
+    
+    IMPORTANT CITUS DETAIL:
+    Citus intercepts and propagates `SET LOCAL ...` utility statements to worker nodes
+    when `citus.propagate_set_commands = 'local'`.
+    Because PostgreSQL does not allow parameterized prepared statements ($1) for `SET`,
+    we use `psycopg.sql.Literal` to safely escape the tenant identifier without risk of SQL injection.
+    """
+    cur.execute("SET citus.propagate_set_commands = 'local';")
+    cur.execute(sql.SQL("SET LOCAL app.tenant_id = {};").format(sql.Literal(str(tenant_id))))
+
+
 def list_tenant_tasks(conn, tenant_id: int):
     """
     Executes a query under the scope of a specific tenant.
@@ -31,9 +46,8 @@ def list_tenant_tasks(conn, tenant_id: int):
     """
     with conn.transaction():
         with conn.cursor(row_factory=dict_row) as cur:
-            # 1. Enable propagation and set tenant context for this transaction
-            cur.execute("SET citus.propagate_set_commands = 'local';")
-            cur.execute("SET LOCAL app.tenant_id = %s;", (str(tenant_id),))
+            # 1. Set tenant context for this transaction
+            set_tenant_context(cur, tenant_id)
 
             # 2. Query tasks - RLS automatically isolates rows for this tenant
             cur.execute(
@@ -57,13 +71,13 @@ def create_tenant_task(conn, tenant_id: int, task_id: int, project_id: int, titl
     """
     with conn.transaction():
         with conn.cursor() as cur:
-            cur.execute("SET citus.propagate_set_commands = 'local';")
-            cur.execute("SET LOCAL app.tenant_id = %s;", (str(tenant_id),))
+            set_tenant_context(cur, tenant_id)
 
             cur.execute(
                 """
                 INSERT INTO tasks (tenant_id, id, project_id, title, status, priority)
-                VALUES (%s, %s, %s, %s, 'todo', 'medium');
+                VALUES (%s, %s, %s, %s, 'todo', 'medium')
+                ON CONFLICT (tenant_id, id) DO UPDATE SET title = EXCLUDED.title;
                 """,
                 (tenant_id, task_id, project_id, title),
             )
@@ -79,10 +93,9 @@ def attempt_cross_tenant_exploit(conn, authenticated_tenant_id: int, target_tena
     try:
         with conn.transaction():
             with conn.cursor() as cur:
-                cur.execute("SET citus.propagate_set_commands = 'local';")
-                cur.execute("SET LOCAL app.tenant_id = %s;", (str(authenticated_tenant_id),))
+                set_tenant_context(cur, authenticated_tenant_id)
 
-                # Malicious attempt: app claims to be Tenant 1, but tries to write to Tenant 2
+                # Malicious attempt: session has tenant_id=1, but tries to write row with tenant_id=2
                 cur.execute(
                     """
                     INSERT INTO tasks (tenant_id, id, project_id, title)
@@ -92,7 +105,7 @@ def attempt_cross_tenant_exploit(conn, authenticated_tenant_id: int, target_tena
                 )
         print("CRITICAL SECURITY FAILURE: Cross-tenant insert was permitted!")
     except psycopg.Error as e:
-        print(f"SECURITY SUCCESS: PostgreSQL RLS blocked cross-tenant write:\n  --> {e.pgerror.strip() if e.pgerror else e}")
+        print(f"SECURITY SUCCESS: PostgreSQL RLS blocked cross-tenant write:\n  --> {e}")
 
 
 def main():
