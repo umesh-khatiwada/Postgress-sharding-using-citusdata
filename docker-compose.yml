@@ -3,6 +3,7 @@ services:
     image: ${CITUS_IMAGE:-citusdata/citus:14.2.0-pg16}
     container_name: citus_coordinator
     hostname: citus_coordinator
+    shm_size: 1g
     ports:
       - "${COORDINATOR_PORT:-5432}:5432"
     environment:
@@ -23,6 +24,7 @@ services:
     image: ${CITUS_IMAGE:-citusdata/citus:14.2.0-pg16}
     container_name: citus_worker_1
     hostname: citus_worker_1
+    shm_size: 1g
     ports:
       - "${WORKER1_PORT:-5433}:5432"
     environment:
@@ -43,6 +45,7 @@ services:
     image: ${CITUS_IMAGE:-citusdata/citus:14.2.0-pg16}
     container_name: citus_worker_2
     hostname: citus_worker_2
+    shm_size: 1g
     ports:
       - "${WORKER2_PORT:-5434}:5432"
     environment:
@@ -64,6 +67,7 @@ services:
     image: ${CITUS_IMAGE:-citusdata/citus:14.2.0-pg16}
     container_name: citus_worker_3
     hostname: citus_worker_3
+    shm_size: 1g
     ports:
       - "${WORKER3_PORT:-5435}:5432"
     environment:
@@ -87,6 +91,7 @@ services:
     ports:
       - "${PGBOUNCER_PORT:-6432}:6432"
     environment:
+      LISTEN_PORT: 6432
       DB_USER: ${POSTGRES_USER:-postgres}
       DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       DB_HOST: citus_coordinator
@@ -101,6 +106,28 @@ services:
     depends_on:
       coordinator:
         condition: service_healthy
+
+  # Dedicated standalone vanilla PostgreSQL 16 container for baseline benchmarks
+  postgres-standalone:
+    image: postgres:16
+    container_name: postgres_standalone
+    hostname: postgres_standalone
+    shm_size: 1g
+    ports:
+      - "${STANDALONE_PORT:-5431}:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_HOST_AUTH_METHOD: trust
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    networks:
+      - citus-network
 
 networks:
   citus-network:

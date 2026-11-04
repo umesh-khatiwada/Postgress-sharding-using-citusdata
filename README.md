@@ -62,13 +62,14 @@ flowchart TD
 | **07** | [Real-Time Analytics](examples/07-realtime-analytics/) | Incremental Rollups, Parallel Aggregates, `hll` HyperLogLog, `topn` Sketches, Sub-millisecond Dashboards | **Implemented & Verified** |
 | **08** | [Time-Series Partitioning](examples/08-timeseries-partitioning/) | Distributed Native Partitioning, `create_time_partitions`, `drop_old_time_partitions`, Automated retention, Partition pruning | **Implemented & Verified** |
 | **09** | [Columnar Storage](examples/09-columnar-storage/) | `USING columnar`, `alter_columnar_table_set` (zstd/lz4), Projection elimination, Mixed hot heap / cold columnar partitions | **Implemented & Verified** |
-| **10** | Distributed Transactions | 2-Phase Commit (2PC), `citus.multi_shard_commit_protocol`, Distributed deadlocks | Planned |
-| **11** | Query from Any Node (MX) | Citus MX, Worker metadata sync, read/write scaling without coordinator bottleneck | Planned |
-| **12** | Connection Pooling | PgBouncer configuration, Citus transaction pool vs session pool mode | Planned |
-| **13** | High-Throughput CRUD | `pgbench` benchmarks: single-node PostgreSQL vs distributed Citus cluster | Planned |
-| **14** | Monitoring & Tuning | `citus_stat_statements`, `citus_shards`, `citus_tables`, executor GUCs | Planned |
-| **15** | Failure & HA | Worker failover, Patroni / CloudNativePG discussion, disaster recovery | Planned |
-| **16** | Migration from Single Node | Online table distribution, foreign key refactoring, dual-write checklists | Planned |
+| **10** | [Normal vs Citus Scale Benchmark (1M & 10M)](examples/10-normal-vs-citus-1m-benchmark/) | Single-node PostgreSQL vs Citus distributed cluster benchmark at scale (1M and 10M rows input, 8 query archetypes, 5.08x ingestion speedup, 4.48x distinct count acceleration, `EXPLAIN ANALYZE` comparison) | **Implemented & Verified** |
+| **11** | Distributed Transactions | 2-Phase Commit (2PC), `citus.multi_shard_commit_protocol`, Distributed deadlocks | Planned |
+| **12** | Query from Any Node (MX) | Citus MX, Worker metadata sync, read/write scaling without coordinator bottleneck | Planned |
+| **13** | Connection Pooling | PgBouncer configuration, Citus transaction pool vs session pool mode | Planned |
+| **14** | High-Throughput CRUD | `pgbench` benchmarks: single-node PostgreSQL vs distributed Citus cluster | Planned |
+| **15** | Monitoring & Tuning | `citus_stat_statements`, `citus_shards`, `citus_tables`, executor GUCs | Planned |
+| **16** | Failure & HA | Worker failover, Patroni / CloudNativePG discussion, disaster recovery | Planned |
+| **17** | Migration from Single Node | Online table distribution, foreign key refactoring, dual-write checklists | Planned |
 
 ---
 

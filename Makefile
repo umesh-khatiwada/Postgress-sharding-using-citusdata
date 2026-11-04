@@ -16,6 +16,7 @@ WORKER1_CONTAINER ?= citus_worker_1
 WORKER2_CONTAINER ?= citus_worker_2
 WORKER3_CONTAINER ?= citus_worker_3
 POSTGRES_USER ?= postgres
+POSTGRES_PASSWORD ?= postgres
 POSTGRES_DB ?= postgres
 
 .PHONY: help
@@ -126,8 +127,33 @@ verify-09: ## Verify 09-columnar-storage
 	@chmod +x examples/09-columnar-storage/verify.sh
 	@./examples/09-columnar-storage/verify.sh
 
+.PHONY: verify-10
+verify-10: ## Verify 10-normal-vs-citus-1m-benchmark (1M/10M parity & shard checks)
+	@chmod +x examples/10-normal-vs-citus-1m-benchmark/verify.sh
+	@./examples/10-normal-vs-citus-1m-benchmark/verify.sh
+
+.PHONY: load-1m
+load-1m: ## Ingest 1,000,000 rows into normal and Citus distributed tables
+	@chmod +x examples/10-normal-vs-citus-1m-benchmark/load_data.sh
+	@./examples/10-normal-vs-citus-1m-benchmark/load_data.sh 1M
+
+.PHONY: load-10m
+load-10m: ## Ingest 10,000,000 rows into normal and Citus distributed tables
+	@chmod +x examples/10-normal-vs-citus-1m-benchmark/load_data.sh
+	@./examples/10-normal-vs-citus-1m-benchmark/load_data.sh 10M
+
+.PHONY: benchmark-1m
+benchmark-1m: ## Run comparative benchmark on current dataset (1M or 10M rows)
+	@chmod +x examples/10-normal-vs-citus-1m-benchmark/benchmark.sh
+	@./examples/10-normal-vs-citus-1m-benchmark/benchmark.sh
+
+.PHONY: benchmark-10m
+benchmark-10m: load-10m ## Ingest 10M rows and run comprehensive benchmark suite
+	@chmod +x examples/10-normal-vs-citus-1m-benchmark/benchmark.sh
+	@./examples/10-normal-vs-citus-1m-benchmark/benchmark.sh
+
 .PHONY: verify-all
-verify-all: verify-00 verify-01 verify-02 verify-03 verify-04 verify-05 verify-06 verify-07 verify-08 verify-09 ## Run verification across all implemented examples
+verify-all: verify-00 verify-01 verify-02 verify-03 verify-04 verify-05 verify-06 verify-07 verify-08 verify-09 verify-10 ## Run verification across all implemented examples
 	@echo "======================================================================"
 	@echo " All implemented example verifications passed successfully!"
 	@echo "======================================================================"

@@ -87,6 +87,7 @@ services:
     ports:
       - "${PGBOUNCER_PORT:-6432}:6432"
     environment:
+      LISTEN_PORT: 6432
       DB_USER: ${POSTGRES_USER:-postgres}
       DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       DB_HOST: citus_coordinator

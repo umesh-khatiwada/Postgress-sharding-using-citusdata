@@ -36,4 +36,19 @@ for worker in "${WORKERS[@]}"; do
     echo "Worker ($worker) is ready."
 done
 
+STANDALONE=${STANDALONE_CONTAINER:-postgres_standalone}
+if docker ps --format '{{.Names}}' | grep -q "^${STANDALONE}$"; then
+    echo "Checking standalone PostgreSQL ($STANDALONE)..."
+    attempt=0
+    until docker exec "$STANDALONE" pg_isready -U postgres -d postgres >/dev/null 2>&1; do
+        attempt=$((attempt + 1))
+        if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
+            echo "Warning: Standalone PostgreSQL ($STANDALONE) did not become ready in time."
+            break
+        fi
+        sleep "$SLEEP_SECS"
+    done
+    echo "Standalone PostgreSQL ($STANDALONE) is ready."
+fi
+
 echo "All Citus cluster nodes are accepting connections."
