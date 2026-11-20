@@ -2,6 +2,11 @@
 
 A comprehensive, production-grade learning repository and reference implementation for **Citus**—the open-source PostgreSQL extension that transforms PostgreSQL into a distributed, horizontally scalable database.
 
+![License](https://img.shields.io/badge/license-Apache%202.0-blue)
+![Citus](https://img.shields.io/badge/Citus-14.2.0-informational)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)
+![Docker Compose](https://img.shields.io/badge/docker-compose-2496ED)
+
 > **Primary Reference**: [Citus Multi-Tenant Use Cases](https://www.citusdata.com/use-cases/multi-tenant-apps)  
 > **Authoritative Documentation**: [docs.citusdata.com](https://docs.citusdata.com)
 
@@ -143,27 +148,55 @@ make pull
 
 ---
 
+## Configuration
+
+Copy `.env.example` to `.env` to override defaults (the Makefile and `docker-compose.yml` fall back to the same defaults if `.env` is absent). The defaults are for **local lab use only**; change the password for anything beyond that.
+
+| Variable | Default | Purpose |
+| :--- | :--- | :--- |
+| `CITUS_IMAGE` | `citusdata/citus:14.2.0-pg16` | Citus image used by coordinator and workers |
+| `POSTGRES_USER` | `postgres` | Superuser name |
+| `POSTGRES_PASSWORD` | `<set-a-password>` (example file ships a local-only default) | Superuser password |
+| `POSTGRES_DB` | `postgres` | Default database |
+| `COORDINATOR_PORT` | `5432` | Host port of the coordinator |
+| `WORKER1_PORT` / `WORKER2_PORT` / `WORKER3_PORT` | `5433` / `5434` / `5435` | Host ports of the workers |
+| `PGBOUNCER_PORT` | `6432` | Host port of PgBouncer |
+| `STANDALONE_PORT` | `5431` | Host port of the plain `postgres:16` container used as the benchmark baseline (Example 10) |
+| `COMPOSE_PROJECT_NAME` | `citus_lab` | Docker Compose project prefix |
+
+## Make Targets
+
+Run `make help` for the full list. Highlights:
+
+| Target | Description |
+| :--- | :--- |
+| `make up` / `make down` | Start the cluster / destroy containers, networks and volumes |
+| `make setup` | Register workers (Example 00) |
+| `make verify-NN` | Run the assertions for example `NN` (`00` to `10`) |
+| `make verify-all` | Run every verification |
+| `make load-1m`, `make load-10m` | Ingest 1M / 10M rows into the normal and Citus tables (Example 10) |
+| `make benchmark-1m`, `make benchmark-10m` | Run the comparative benchmark |
+| `make shell-coordinator`, `shell-worker-1`, `shell-worker-2`, `shell-pgbouncer` | Open `psql` sessions |
+
+> Benchmark figures quoted in the matrix above come from the author's runs and depend on hardware; re-run `make benchmark-1m` to reproduce.
+
 ## Repository Layout
 
 ```
 .
-├── README.md                      # Overview, architecture, quickstart, matrix
-├── Makefile                       # Cluster lifecycle, setup, and verification targets
-├── docker-compose.yml             # Pinned Citus 14.2 cluster definition
-├── .env.example                   # Environment defaults and pinned image tags
-├── .gitignore
+├── README.md
+├── Makefile                       # Cluster lifecycle, setup, verify and benchmark targets
+├── docker-compose.yml             # Coordinator, 3 workers, PgBouncer, standalone Postgres
+├── destroy.sh                     # Standalone teardown (--all also removes images)
+├── .env.example                   # Environment defaults
 ├── LICENSE                        # Apache 2.0
-├── .github/
-│   └── workflows/ci.yml           # Automated CI running make verify-all
-├── docker/                        # Compose files and container configs
-├── common/                        # Shared SQL diagnostics and health checks
-│   ├── citus_helpers.sql          # Topology, sharding, and colocation inspector
-│   └── wait-for-cluster.sh        # Healthcheck poll script
+├── .github/workflows/ci.yml       # CI
+├── docker/                        # Additional compose file and notes
+├── common/                        # citus_helpers.sql, wait-for-cluster.sh, destroy-cluster.sh
 └── examples/
-    ├── 00-cluster-setup/          # Node registration, health checks, GUC tuning
-    ├── 01-row-based-multitenant/  # SaaS schema, co-location, RLS, DDL migration
-    │   └── app/                   # Python psycopg 3 demo application
-    └── [02-16 folders...]         # Scaffolded upcoming modules
+    ├── 00-cluster-setup/ ... 10-normal-vs-citus-1m-benchmark/
+    │   └── each: README.md, schema.sql, data.sql, queries.sql, verify.sh/.sql, cleanup.sql
+    └── 01-row-based-multitenant/app/   # Python psycopg 3 demo app
 ```
 
 ---
@@ -189,3 +222,13 @@ make pull
 
 ## Continuous Integration (CI)
 GitHub Actions automatically boots the Docker Compose cluster, applies Example 00 setup, runs all verification suites, and tests clean teardown on every commit. See [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+
+---
+
+## License
+
+Released under the [Apache License 2.0](LICENSE).
+
+## Author
+
+Umesh Khatiwada - [github.com/umesh-khatiwada](https://github.com/umesh-khatiwada)
